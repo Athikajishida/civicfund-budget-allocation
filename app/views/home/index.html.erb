@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Allocation</title>
+    <meta name="csrf-token" content="<%= form_authenticity_token %>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .nav-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        .budget-overview {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .budget-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card.over-budget {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: rgba(255, 0, 0, 0.5);
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .project-card.has-allocation {
+            border-color: rgba(34, 197, 94, 0.5);
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .project-card.over-requested {
+            border-color: rgba(239, 68, 68, 0.5);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .project-title {
+            color: white;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .project-category {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .requested-section {
+            margin-bottom: 20px;
+        }
+
+        .requested-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .requested-amount {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .allocation-section {
+            margin-bottom: 15px;
+        }
+
+        .allocation-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .allocation-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .allocation-input:focus {
+            outline: none;
+            border-color: rgba(34, 197, 94, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .allocation-input.has-value {
+            border-color: rgba(34, 197, 94, 0.5);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .allocation-input.over-requested {
+            border-color: rgba(239, 68, 68, 0.5);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .allocation-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .progress-fill.over-requested {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+        }
+
+        .submit-section {
+            text-align: center;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .warning-message {
+            background: rgba(251, 191, 36, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .budget-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <div class="logo">Budget Management</div>
+        <nav class="nav-links">
+            <button class="logout-btn" onclick="handleLogout()">Logout</button>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Budget Allocation</h1>
+            <p class="page-subtitle">Distribute your $1,000 budget across community projects</p>
+        </div>
+
+        <!-- Budget Overview -->
+        <div class="budget-overview">
+            <div class="budget-stats">
+                <div class="stat-card total">
+                    <div class="stat-label">Total Budget</div>
+                    <div class="stat-value">$1,000</div>
+                </div>
+                <div class="stat-card allocated">
+                    <div class="stat-label">Allocated</div>
+                    <div class="stat-value">$<span id="totalAllocated"><%= @allocations.values.sum(&:amount) %></span></div>
+                </div>
+                <div class="stat-card remaining">
+                    <div class="stat-label">Remaining</div>
+                    <div class="stat-value">$<span id="remainingBudget"><%= @remaining %></span></div>
+                </div>
+            </div>
+            <div id="statusMessage" class="status-message status-success">
+                <% if @remaining == 1000 %>
+                    You have your full budget available to allocate.
+                <% elsif @remaining == 0 %>
+                    Perfect! You have allocated your entire budget.
+                <% elsif @remaining > 0 %>
+                    You have $<%= @remaining %> remaining to allocate.
+                <% else %>
+                    You are over budget by $<%= @remaining.abs %>. Please reduce your allocations.
+                <% end %>
+            </div>
+        </div>
+
+        <!-- Projects Form -->
+        <form id="budgetForm" action="/allocations" method="POST">
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+            
+            <div class="projects-grid">
+                <% @projects.each do |project| %>
+                    <div class="project-card" data-project="<%= project.id %>">
+                        <div class="project-header">
+                            <h3 class="project-title"><%= project.name %></h3>
+                            <%
+=begin%>
+ <span class="project-category"><%= project.category %></span> 
+<%
+=end%>
+                        </div>
+                        <div class="requested-section">
+                            <div class="requested-label">Requested Funding</div>
+                            <div class="requested-amount">$<%= project.cost %></div>
+                        </div>
+                        <div class="allocation-section">
+                            <label for="allocation_<%= project.id %>" class="allocation-label">Your Allocation</label>
+                            <input 
+                                type="number" 
+                                id="allocation_<%= project.id %>" 
+                                name="allocations[<%= project.id %>]" 
+                                min="0" 
+                                max="1000" 
+                                value="<%= @allocations[project.id]&.amount || 0 %>" 
+                                class="allocation-input" 
+                                placeholder="0" 
+                                data-requested="<%= project.cost %>"
+                            >
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: <%= @allocations[project.id] ? [(@allocations[project.id].amount.to_f / project.cost * 100).round(2), 100].min : 0 %>%"></div>
+                            </div>
+                            <div class="warning-message" id="warning_<%= project.id %>" style="display: <%= @allocations[project.id] && @allocations[project.id].amount > project.cost ? 'block' : 'none' %>;">
+                                Allocation exceeds requested amount of $<%= project.cost %>
+                            </div>
+                        </div>
+                    </div>
+                <% end %>
+            </div>
+
+            <div class="submit-section">
+                <button type="submit" class="submit-btn" <%= 'disabled' if @remaining < 0 %>>Submit Budget Allocation</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const TOTAL_BUDGET = 1000;
+        
+        function updateBudget() {
+            const inputs = document.querySelectorAll('.allocation-input');
+            let totalAllocated = 0;
+            let hasOverAllocation = false;
+            
+            inputs.forEach((input) => {
+                const value = parseInt(input.value) || 0;
+                const requestedAmount = parseInt(input.dataset.requested);
+                const projectId = input.id.split('_')[1];
+                
+                totalAllocated += value;
+                
+                // Update input styling and warnings
+                const card = input.closest('.project-card');
+                const progressFill = input.parentElement.querySelector('.progress-fill');
+                const warningElement = document.getElementById(`warning_${projectId}`);
+                
+                // Check if allocation exceeds requested amount
+                const isOverRequested = value > requestedAmount;
+                if (isOverRequested) {
+                    hasOverAllocation = true;
+                    input.classList.add('over-requested');
+                    card.classList.add('over-requested');
+                    progressFill.classList.add('over-requested');
+                    warningElement.style.display = 'block';
+                } else {
+                    input.classList.remove('over-requested');
+                    card.classList.remove('over-requested');
+                    progressFill.classList.remove('over-requested');
+                    warningElement.style.display = 'none';
+                }
+                
+                if (value > 0) {
+                    input.classList.add('has-value');
+                    card.classList.add('has-allocation');
+                    
+                    // Update progress bar
+                    const percentage = Math.min((value / requestedAmount) * 100, 100);
+                    progressFill.style.width = percentage + '%';
+                } else {
+                    input.classList.remove('has-value');
+                    card.classList.remove('has-allocation');
+                    progressFill.style.width = '0%';
+                }
+            });
+            
+            const remaining = TOTAL_BUDGET - totalAllocated;
+            
+            // Update display
+            document.getElementById('totalAllocated').textContent = totalAllocated;
+            document.getElementById('remainingBudget').textContent = remaining;
+            
+            // Update status message and remaining card
+            const statusElement = document.getElementById('statusMessage');
+            const remainingCard = document.querySelector('.stat-card.remaining');
+            const submitBtn = document.querySelector('.submit-btn');
+            
+            if (remaining < 0) {
+                statusElement.textContent = `You are over budget by $${Math.abs(remaining)}. Please reduce your allocations.`;
+                statusElement.className = 'status-message status-error';
+                remainingCard.classList.add('over-budget');
+                submitBtn.disabled = true;
+            } else if (hasOverAllocation) {
+                statusElement.textContent = 'Some allocations exceed project requests. Consider redistributing funds.';
+                statusElement.className = 'status-message status-warning';
+                remainingCard.classList.remove('over-budget');
+                submitBtn.disabled = false;
+            } else if (remaining === 0) {
+                statusElement.textContent = 'Perfect! You have allocated your entire budget.';
+                statusElement.className = 'status-message status-success';
+                remainingCard.classList.remove('over-budget');
+                submitBtn.disabled = false;
+            } else {
+                statusElement.textContent = `You have $${remaining} remaining to allocate.`;
+                statusElement.className = 'status-message status-warning';
+                remainingCard.classList.remove('over-budget');
+                submitBtn.disabled = false;
+            }
+        }
+        
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Create a form to submit logout request to Devise
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/users/sign_out';
+                
+                // Add CSRF token
+                const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                if (csrfToken) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = 'authenticity_token';
+                    csrfInput.value = csrfToken.content;
+                    form.appendChild(csrfInput);
+                }
+                
+                // Add method override for DELETE
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'delete';
+                form.appendChild(methodInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+        
+        // Add event listeners to all allocation inputs
+        document.querySelectorAll('.allocation-input').forEach(input => {
+            input.addEventListener('input', updateBudget);
+            input.addEventListener('change', updateBudget);
+        });
+        
+        // Form submission - now properly posts to Rails
+        document.getElementById('budgetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            let totalAllocated = 0;
+            
+            // Calculate total allocation
+            document.querySelectorAll('.allocation-input').forEach(input => {
+                totalAllocated += parseInt(input.value) || 0;
+            });
+            
+            if (totalAllocated > TOTAL_BUDGET) {
+                alert('Cannot submit: You are over budget! Please adjust your allocations.');
+                return;
+            }
+            
+            // Submit normally to Rails backend (will redirect)
+            this.submit();
+        });
+        
+        // Initialize with existing allocations
+        updateBudget();
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!-- app/views/admin/dashboard/index.html.erb -->
+
+<style>
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #6a0dad;
+    padding: 15px 20px;
+    color: white;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+  }
+
+  .logout-link {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .logout-link:hover {
+    text-decoration: underline;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: sans-serif;
+  }
+
+  thead {
+    background-color: #6a0dad;
+    color: white;
+  }
+
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #f3e9fc;
+  }
+
+  tbody tr:hover {
+    background-color: #e2d4f7;
+  }
+</style>
+
+<div class="header">
+  <h1>Admin Dashboard</h1>
+<%= button_to "Logout", destroy_admin_session_path, method: :delete, class: "logout-link", form: { style: "display:inline; background:none; border:none;" } %>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Project</th>
+      <th>Requested Funding</th>
+      <th>Total Allocated</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @projects_with_allocations.each do |project| %>
+      <tr>
+        <td><%= project.name %></td>
+        <td>$<%= number_with_delimiter(project.cost) %></td>
+        <td>$<%= number_with_delimiter(project.total_allocated.to_i) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

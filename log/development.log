@@ -1,0 +1,2053 @@
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='CivicFund'*/[0m
+  [1m[35m (109.2ms)[0m  [1m[35mCREATE DATABASE "civic_fund_development" ENCODING = 'unicode' /*application='CivicFund'*/[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='CivicFund'*/[0m
+  [1m[35m (62.2ms)[0m  [1m[35mCREATE DATABASE "civic_fund_test" ENCODING = 'unicode' /*application='CivicFund'*/[0m
+  [1m[35m (1.7ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY) /*application='CivicFund'*/[0m
+  [1m[35m (0.9ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='CivicFund'*/[0m
+  [1m[35m (0.0ms)[0m  [1m[34mSELECT pg_try_advisory_lock(2439443732050380405) /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.4ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'development', '2025-07-12 07:32:01.711307', '2025-07-12 07:32:01.711309') RETURNING "key" /*application='CivicFund'*/[0m
+Migrating to DeviseCreateUsers (20250712073200)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[35m (1.4ms)[0m  [1m[35mCREATE TABLE "users" ("id" bigserial primary key, "email" character varying DEFAULT '' NOT NULL, "encrypted_password" character varying DEFAULT '' NOT NULL, "reset_password_token" character varying, "reset_password_sent_at" timestamp(6), "remember_created_at" timestamp(6), "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='CivicFund'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email") /*application='CivicFund'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_users_on_reset_password_token" ON "users" ("reset_password_token") /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.1ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20250712073200') RETURNING "version" /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mCOMMIT /*application='CivicFund'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_advisory_unlock(2439443732050380405) /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(2439443732050380405) /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='CivicFund'*/[0m
+Migrating to CreateProjects (20250712073218)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[35m (7.8ms)[0m  [1m[35mCREATE TABLE "projects" ("id" bigserial primary key, "name" character varying, "cost" integer, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.2ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20250712073218') RETURNING "version" /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT /*application='CivicFund'*/[0m
+Migrating to CreateAllocations (20250712073219)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[35m (4.9ms)[0m  [1m[35mCREATE TABLE "allocations" ("id" bigserial primary key, "user_id" bigint NOT NULL, "project_id" bigint NOT NULL, "amount" integer, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_008b3f26ce"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+, CONSTRAINT "fk_rails_ac478fcffe"
+FOREIGN KEY ("project_id")
+  REFERENCES "projects" ("id")
+) /*application='CivicFund'*/[0m
+  [1m[35m (1.2ms)[0m  [1m[35mCREATE INDEX "index_allocations_on_user_id" ON "allocations" ("user_id") /*application='CivicFund'*/[0m
+  [1m[35m (0.9ms)[0m  [1m[35mCREATE INDEX "index_allocations_on_project_id" ON "allocations" ("project_id") /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.1ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20250712073219') RETURNING "version" /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mCOMMIT /*application='CivicFund'*/[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_advisory_unlock(2439443732050380405) /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[36mProject Create (4.7ms)[0m  [1m[32mINSERT INTO "projects" ("name", "cost", "created_at", "updated_at") VALUES ('Community Park Renovation', 30000, '2025-07-12 07:34:08.797889', '2025-07-12 07:34:08.797889') RETURNING "id" /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[36mProject Create (0.9ms)[0m  [1m[32mINSERT INTO "projects" ("name", "cost", "created_at", "updated_at") VALUES ('Library Expansion', 50000, '2025-07-12 07:34:08.805887', '2025-07-12 07:34:08.805887') RETURNING "id" /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[36mProject Create (1.4ms)[0m  [1m[32mINSERT INTO "projects" ("name", "cost", "created_at", "updated_at") VALUES ('New Street Lights', 20000, '2025-07-12 07:34:08.811964', '2025-07-12 07:34:08.811964') RETURNING "id" /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mCOMMIT /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[36mProject Create (1.0ms)[0m  [1m[32mINSERT INTO "projects" ("name", "cost", "created_at", "updated_at") VALUES ('Public Art Installation', 10000, '2025-07-12 07:34:08.820249', '2025-07-12 07:34:08.820249') RETURNING "id" /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mCOMMIT /*application='CivicFund'*/[0m
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:08:34 +0530
+  [1m[36mActiveRecord::SchemaMigration Load (1.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 58ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.2ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:08:34 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering /Users/mohamedahmed/.local/share/mise/installs/ruby/3.4.1/lib/ruby/gems/3.4.0/gems/devise-4.9.4/app/views/devise/sessions/new.html.erb within layouts/application
+  Rendered /Users/mohamedahmed/.local/share/mise/installs/ruby/3.4.1/lib/ruby/gems/3.4.0/gems/devise-4.9.4/app/views/devise/shared/_links.html.erb (Duration: 3.6ms | GC: 0.0ms)
+  Rendered /Users/mohamedahmed/.local/share/mise/installs/ruby/3.4.1/lib/ruby/gems/3.4.0/gems/devise-4.9.4/app/views/devise/sessions/new.html.erb within layouts/application (Duration: 10.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 17.6ms | GC: 0.0ms)
+Completed 200 OK in 87ms (Views: 28.9ms | ActiveRecord: 14.9ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_up" for 127.0.0.1 at 2025-07-12 13:08:36 +0530
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering /Users/mohamedahmed/.local/share/mise/installs/ruby/3.4.1/lib/ruby/gems/3.4.0/gems/devise-4.9.4/app/views/devise/registrations/new.html.erb within layouts/application
+  Rendered /Users/mohamedahmed/.local/share/mise/installs/ruby/3.4.1/lib/ruby/gems/3.4.0/gems/devise-4.9.4/app/views/devise/shared/_error_messages.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  Rendered /Users/mohamedahmed/.local/share/mise/installs/ruby/3.4.1/lib/ruby/gems/3.4.0/gems/devise-4.9.4/app/views/devise/shared/_links.html.erb (Duration: 0.2ms | GC: 0.0ms)
+  Rendered /Users/mohamedahmed/.local/share/mise/installs/ruby/3.4.1/lib/ruby/gems/3.4.0/gems/devise-4.9.4/app/views/devise/registrations/new.html.erb within layouts/application (Duration: 9.9ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 12.1ms | GC: 0.0ms)
+Completed 200 OK in 56ms (Views: 13.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/users" for 127.0.0.1 at 2025-07-12 13:08:55 +0530
+Processing by Devise::RegistrationsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "password_confirmation" => "[FILTERED]"}, "commit" => "Sign up"}
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*action='create',application='CivicFund',controller='registrations'*/[0m
+  [1m[36mUser Exists? (2.2ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE "users"."email" = 'abc@abc.com' LIMIT 1 /*action='create',application='CivicFund',controller='registrations'*/[0m
+  [1m[36mUser Create (1.5ms)[0m  [1m[32mINSERT INTO "users" ("email", "encrypted_password", "reset_password_token", "reset_password_sent_at", "remember_created_at", "created_at", "updated_at") VALUES ('abc@abc.com', '$2a$12$RdAtYHKg28ZnJzhSg3bAhuGCJN8JdQdzYxH0m2szuW/tTwWFgC.Zm', NULL, NULL, NULL, '2025-07-12 07:38:55.308982', '2025-07-12 07:38:55.308982') RETURNING "id" /*action='create',application='CivicFund',controller='registrations'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT /*action='create',application='CivicFund',controller='registrations'*/[0m
+Redirected to http://127.0.0.1:3000/
+Completed 303 See Other in 282ms (ActiveRecord: 4.5ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:08:55 +0530
+Processing by HomeController#index as TURBO_STREAM
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.9ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 4.6ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 5.9ms | GC: 0.0ms)
+Completed 200 OK in 58ms (Views: 6.5ms | ActiveRecord: 5.1ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:22:21 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (1.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.6ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 4.2ms | GC: 0.0ms)
+Completed 200 OK in 85ms (Views: 5.9ms | ActiveRecord: 8.5ms (2 queries, 0 cached) | GC: 11.2ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:30:21 +0530
+  [1m[36mActiveRecord::SchemaMigration Load (1.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (1.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (1.0ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 8.0ms | GC: 0.4ms)
+Completed 200 OK in 140ms (Views: 10.7ms | ActiveRecord: 40.9ms (2 queries, 0 cached) | GC: 10.6ms)
+
+
+Started GET "/assets/application-c9124be5.css" for 127.0.0.1 at 2025-07-12 13:30:22 +0530
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:33:33 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.3ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 6.6ms | GC: 0.0ms)
+Completed 200 OK in 81ms (Views: 7.3ms | ActiveRecord: 10.2ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/assets/application-2022a7b2.css" for 127.0.0.1 at 2025-07-12 13:33:33 +0530
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:33:36 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.5ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.5ms | GC: 0.0ms)
+Completed 200 OK in 57ms (Views: 3.0ms | ActiveRecord: 1.0ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:33:37 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.3ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.1ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.9ms | GC: 0.0ms)
+Completed 200 OK in 55ms (Views: 4.4ms | ActiveRecord: 0.8ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:35:27 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.3ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 4.8ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 8.3ms | GC: 0.0ms)
+Completed 200 OK in 70ms (Views: 9.3ms | ActiveRecord: 8.1ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:35:47 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 6.0ms | GC: 2.8ms)
+Completed 200 OK in 73ms (Views: 7.7ms | ActiveRecord: 8.7ms (2 queries, 0 cached) | GC: 17.7ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:38:37 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.4ms | GC: 0.0ms)
+Completed 200 OK in 60ms (Views: 3.5ms | ActiveRecord: 9.4ms (2 queries, 0 cached) | GC: 0.5ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:38:38 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.3ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.6ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.9ms | GC: 0.0ms)
+Completed 200 OK in 47ms (Views: 4.5ms | ActiveRecord: 0.8ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:38:38 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 0.4ms | GC: 0.1ms)
+Completed 200 OK in 38ms (Views: 0.6ms | ActiveRecord: 0.6ms (2 queries, 0 cached) | GC: 0.1ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:38:38 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.5ms | GC: 0.0ms)
+Completed 200 OK in 59ms (Views: 2.4ms | ActiveRecord: 0.6ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started DELETE "/users/sign_out" for 127.0.0.1 at 2025-07-12 13:38:41 +0530
+Processing by Devise::SessionsController#destroy as HTML
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='destroy',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://127.0.0.1:3000/
+Completed 303 See Other in 56ms (ActiveRecord: 0.3ms (1 query, 0 cached) | GC: 0.2ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:38:41 +0530
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 22ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:38:41 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering /Users/mohamedahmed/.local/share/mise/installs/ruby/3.4.1/lib/ruby/gems/3.4.0/gems/devise-4.9.4/app/views/devise/sessions/new.html.erb within layouts/application
+  Rendered /Users/mohamedahmed/.local/share/mise/installs/ruby/3.4.1/lib/ruby/gems/3.4.0/gems/devise-4.9.4/app/views/devise/shared/_links.html.erb (Duration: 1.6ms | GC: 0.0ms)
+  Rendered /Users/mohamedahmed/.local/share/mise/installs/ruby/3.4.1/lib/ruby/gems/3.4.0/gems/devise-4.9.4/app/views/devise/sessions/new.html.erb within layouts/application (Duration: 10.5ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 12.1ms | GC: 0.1ms)
+Completed 200 OK in 37ms (Views: 14.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.1ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:45:46 +0530
+  [1m[36mActiveRecord::SchemaMigration Load (1.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 0.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 7.1ms | GC: 0.0ms)
+Completed 200 OK in 96ms (Views: 17.6ms | ActiveRecord: 15.3ms (0 queries, 0 cached) | GC: 0.7ms)
+
+
+Started GET "/assets/application-fdffa399.css" for 127.0.0.1 at 2025-07-12 13:45:46 +0530
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:47:55 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 0.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 6.7ms | GC: 0.0ms)
+Completed 200 OK in 53ms (Views: 9.1ms | ActiveRecord: 5.7ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:47:57 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 0.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.7ms | GC: 0.0ms)
+Completed 200 OK in 47ms (Views: 4.4ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:47:59 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 0.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.9ms | GC: 0.0ms)
+Completed 200 OK in 46ms (Views: 2.3ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:48:01 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 1.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.9ms | GC: 0.0ms)
+Completed 200 OK in 49ms (Views: 3.4ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:48:02 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 0.7ms | GC: 0.0ms)
+Completed 200 OK in 47ms (Views: 1.3ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:48:06 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 0.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 0.6ms | GC: 0.0ms)
+Completed 200 OK in 44ms (Views: 1.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:52:11 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 4.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 7.6ms | GC: 0.0ms)
+Completed 200 OK in 55ms (Views: 11.7ms | ActiveRecord: 10.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/signup.html" for 127.0.0.1 at 2025-07-12 13:52:13 +0530
+  
+ActionController::RoutingError (No route matches [GET] "/users/signup.html"):
+  
+Started GET "/users/signup.html" for 127.0.0.1 at 2025-07-12 13:53:52 +0530
+  
+ActionController::RoutingError (No route matches [GET] "/users/signup.html"):
+  
+Started GET "/favicon.ico" for 127.0.0.1 at 2025-07-12 13:53:52 +0530
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:53:56 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 0.5ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 3.2ms | GC: 0.1ms)
+Completed 200 OK in 60ms (Views: 5.3ms | ActiveRecord: 5.7ms (0 queries, 0 cached) | GC: 0.6ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:53:57 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 0.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.3ms | GC: 0.0ms)
+Completed 200 OK in 50ms (Views: 2.6ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_up" for 127.0.0.1 at 2025-07-12 13:54:00 +0530
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/registrations/new.html.erb within layouts/application (Duration: 0.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.2ms | GC: 0.0ms)
+Completed 200 OK in 43ms (Views: 3.2ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_up" for 127.0.0.1 at 2025-07-12 13:54:50 +0530
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 0.6ms | GC: 0.0ms)
+  Rendered devise/registrations/new.html.erb within layouts/application (Duration: 6.8ms | GC: 0.2ms)
+  Rendered layout layouts/application.html.erb (Duration: 8.8ms | GC: 0.2ms)
+Completed 200 OK in 47ms (Views: 10.3ms | ActiveRecord: 5.7ms (0 queries, 0 cached) | GC: 0.4ms)
+
+
+Started GET "/users/sign_up" for 127.0.0.1 at 2025-07-12 13:54:51 +0530
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.2ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  Rendered devise/registrations/new.html.erb within layouts/application (Duration: 5.9ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 6.9ms | GC: 0.0ms)
+Completed 200 OK in 55ms (Views: 7.7ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_up" for 127.0.0.1 at 2025-07-12 13:56:54 +0530
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 0.5ms | GC: 0.0ms)
+  Rendered devise/registrations/new.html.erb within layouts/application (Duration: 5.6ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 7.8ms | GC: 0.0ms)
+Completed 200 OK in 41ms (Views: 9.1ms | ActiveRecord: 4.6ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_up" for 127.0.0.1 at 2025-07-12 13:56:55 +0530
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.5ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  Rendered devise/registrations/new.html.erb within layouts/application (Duration: 2.7ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 6.2ms | GC: 0.0ms)
+Completed 200 OK in 53ms (Views: 7.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:56:58 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.5ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 9.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 9.8ms | GC: 0.0ms)
+Completed 200 OK in 55ms (Views: 10.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/password/new" for 127.0.0.1 at 2025-07-12 13:56:59 +0530
+Processing by Devise::PasswordsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/passwords/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  Rendered devise/passwords/new.html.erb within layouts/application (Duration: 2.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.6ms | GC: 0.0ms)
+Completed 200 OK in 42ms (Views: 3.4ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:57:06 +0530
+Processing by Devise::SessionsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+Completed 401 Unauthorized in 31ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Processing by Devise::SessionsController#new as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 2.7ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.8ms | GC: 0.0ms)
+Completed 200 OK in 25ms (Views: 3.0ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:57:16 +0530
+Processing by Devise::SessionsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  [1m[36mUser Load (2.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = 'abc@abc.com' ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://127.0.0.1:3000/
+Completed 303 See Other in 287ms (ActiveRecord: 2.0ms (1 query, 0 cached) | GC: 5.6ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:57:17 +0530
+Processing by HomeController#index as TURBO_STREAM
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.7ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.9ms | GC: 0.0ms)
+Completed 200 OK in 58ms (Views: 5.1ms | ActiveRecord: 5.1ms (2 queries, 0 cached) | GC: 0.8ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:59:32 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 4.8ms | GC: 0.0ms)
+Completed 200 OK in 66ms (Views: 5.1ms | ActiveRecord: 0.7ms (2 queries, 0 cached) | GC: 0.8ms)
+
+
+Started GET "/assets/application-e6a1d683.css" for 127.0.0.1 at 2025-07-12 13:59:32 +0530
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:59:33 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.3ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 0.4ms | GC: 0.0ms)
+Completed 200 OK in 48ms (Views: 0.5ms | ActiveRecord: 0.8ms (2 queries, 0 cached) | GC: 0.3ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:59:34 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 0.3ms | GC: 0.0ms)
+Completed 200 OK in 69ms (Views: 0.4ms | ActiveRecord: 0.6ms (2 queries, 0 cached) | GC: 0.2ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:59:34 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.4ms | GC: 0.0ms)
+Completed 200 OK in 49ms (Views: 4.8ms | ActiveRecord: 0.6ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:59:34 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.3ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 0.3ms | GC: 0.0ms)
+Completed 200 OK in 39ms (Views: 0.4ms | ActiveRecord: 0.7ms (2 queries, 0 cached) | GC: 0.1ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:59:34 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 0.4ms | GC: 0.0ms)
+Completed 200 OK in 46ms (Views: 0.5ms | ActiveRecord: 0.7ms (2 queries, 0 cached) | GC: 0.1ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:59:35 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 0.3ms | GC: 0.0ms)
+Completed 200 OK in 57ms (Views: 0.5ms | ActiveRecord: 0.9ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:59:35 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.3ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 0.5ms | GC: 0.0ms)
+Completed 200 OK in 37ms (Views: 0.7ms | ActiveRecord: 0.6ms (2 queries, 0 cached) | GC: 0.8ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:59:35 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.3ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 0.3ms | GC: 0.0ms)
+Completed 200 OK in 63ms (Views: 6.6ms | ActiveRecord: 0.7ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started DELETE "/users/sign_out" for 127.0.0.1 at 2025-07-12 13:59:44 +0530
+Processing by Devise::SessionsController#destroy as HTML
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='destroy',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://127.0.0.1:3000/
+Completed 303 See Other in 64ms (ActiveRecord: 0.8ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 13:59:44 +0530
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 24ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 13:59:44 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 4.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 4.9ms | GC: 0.0ms)
+Completed 200 OK in 30ms (Views: 6.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 14:00:43 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 2.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 12.3ms | GC: 0.0ms)
+Completed 200 OK in 59ms (Views: 15.6ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/users/sign_in" for 127.0.0.1 at 2025-07-12 14:00:54 +0530
+Processing by Devise::SessionsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = 'abc@abc.com' ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://127.0.0.1:3000/
+Completed 303 See Other in 279ms (ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 14:00:54 +0530
+Processing by HomeController#index as TURBO_STREAM
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.6ms | GC: 0.0ms)
+Completed 200 OK in 24ms (Views: 2.9ms | ActiveRecord: 0.7ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 14:06:36 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.3ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 6.0ms | GC: 0.0ms)
+Completed 200 OK in 73ms (Views: 11.7ms | ActiveRecord: 10.2ms (2 queries, 0 cached) | GC: 0.2ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 14:06:37 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.4ms | GC: 0.0ms)
+Completed 200 OK in 66ms (Views: 2.0ms | ActiveRecord: 0.7ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 14:07:29 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.3ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 0.4ms | GC: 0.0ms)
+Completed 200 OK in 66ms (Views: 0.5ms | ActiveRecord: 1.0ms (2 queries, 0 cached) | GC: 0.3ms)
+
+
+Started GET "/assets/application-e8dc057d.css" for 127.0.0.1 at 2025-07-12 14:07:29 +0530
+Started DELETE "/users/sign_out" for 127.0.0.1 at 2025-07-12 14:10:36 +0530
+Processing by Devise::SessionsController#destroy as HTML
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 ORDER BY "users"."id" ASC LIMIT 1 /*action='destroy',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://127.0.0.1:3000/
+Completed 303 See Other in 45ms (ActiveRecord: 3.4ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-07-12 14:10:36 +0530
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 22ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2025-07-12 14:10:36 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 7.4ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 12.6ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 17.0ms | GC: 0.0ms)
+Completed 200 OK in 48ms (Views: 23.8ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_up" for 127.0.0.1 at 2025-07-12 14:10:40 +0530
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 5.6ms | GC: 0.0ms)
+  Rendered devise/registrations/new.html.erb within layouts/application (Duration: 15.8ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 16.7ms | GC: 0.0ms)
+Completed 200 OK in 60ms (Views: 22.0ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_up" for 127.0.0.1 at 2025-07-12 14:11:45 +0530
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.2ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 1.3ms | GC: 0.0ms)
+  Rendered devise/registrations/new.html.erb within layouts/application (Duration: 8.5ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 11.3ms | GC: 0.2ms)
+Completed 200 OK in 52ms (Views: 19.3ms | ActiveRecord: 3.3ms (0 queries, 0 cached) | GC: 0.5ms)
+
+
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(2439443732050380405) /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='CivicFund'*/[0m
+Migrating to DeviseCreateAdmins (20250712084321)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[35m (8.6ms)[0m  [1m[35mCREATE TABLE "admins" ("id" bigserial primary key, "email" character varying DEFAULT '' NOT NULL, "encrypted_password" character varying DEFAULT '' NOT NULL, "reset_password_token" character varying, "reset_password_sent_at" timestamp(6), "remember_created_at" timestamp(6), "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='CivicFund'*/[0m
+  [1m[35m (1.6ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_admins_on_email" ON "admins" ("email") /*application='CivicFund'*/[0m
+  [1m[35m (1.3ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_admins_on_reset_password_token" ON "admins" ("reset_password_token") /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.2ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20250712084321') RETURNING "version" /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='CivicFund'*/[0m
+  [1m[35m (0.7ms)[0m  [1m[34mSELECT pg_advisory_unlock(2439443732050380405) /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+Started GET "/admin" for 127.0.0.1 at 2025-07-12 14:16:29 +0530
+  [1m[36mActiveRecord::SchemaMigration Load (1.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+  
+ActionController::RoutingError (No route matches [GET] "/admin"):
+  
+Started GET "/admin" for ::1 at 2025-07-12 14:16:43 +0530
+  
+ActionController::RoutingError (No route matches [GET] "/admin"):
+  
+Started GET "/favicon.ico" for ::1 at 2025-07-12 14:16:43 +0530
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/admin" for ::1 at 2025-07-12 14:18:16 +0530
+  [1m[36mActiveRecord::SchemaMigration Load (1.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+Processing by Admin::DashboardController#index as HTML
+Completed 401 Unauthorized in 46ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/admins/sign_in" for ::1 at 2025-07-12 14:18:17 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 3.7ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 9.0ms | GC: 0.2ms)
+  Rendered layout layouts/application.html.erb (Duration: 16.5ms | GC: 0.5ms)
+Completed 200 OK in 82ms (Views: 24.6ms | ActiveRecord: 16.3ms (0 queries, 0 cached) | GC: 1.3ms)
+
+
+Started GET "/assets/application-e8dc057d.css" for ::1 at 2025-07-12 14:18:17 +0530
+Started GET "/assets/turbo.min-3a2e143f.js" for ::1 at 2025-07-12 14:18:17 +0530
+Started GET "/assets/stimulus.min-4b1e420e.js" for ::1 at 2025-07-12 14:18:17 +0530
+Started GET "/assets/controllers/hello_controller-708796bd.js" for ::1 at 2025-07-12 14:18:17 +0530
+Started GET "/assets/controllers/index-ee64e1f1.js" for ::1 at 2025-07-12 14:18:17 +0530
+Started GET "/assets/application-bfcdf840.js" for ::1 at 2025-07-12 14:18:17 +0530
+Started GET "/assets/stimulus-loading-1fc53fe7.js" for ::1 at 2025-07-12 14:18:17 +0530
+Started GET "/assets/controllers/application-3affb389.js" for ::1 at 2025-07-12 14:18:17 +0530
+Started GET "/admins/password/new" for ::1 at 2025-07-12 14:18:28 +0530
+Processing by Devise::PasswordsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/passwords/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  Rendered devise/passwords/new.html.erb within layouts/application (Duration: 3.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 4.0ms | GC: 0.0ms)
+Completed 200 OK in 39ms (Views: 4.7ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/admins/sign_up" for ::1 at 2025-07-12 14:18:28 +0530
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.5ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  Rendered devise/registrations/new.html.erb within layouts/application (Duration: 15.8ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 16.7ms | GC: 0.0ms)
+Completed 200 OK in 64ms (Views: 20.8ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+  [1m[36mActiveRecord::SchemaMigration Load (1.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[36mProject Create (3.6ms)[0m  [1m[32mINSERT INTO "projects" ("name", "cost", "created_at", "updated_at") VALUES ('Community Park Renovation', 30000, '2025-07-12 08:50:50.001782', '2025-07-12 08:50:50.001782') RETURNING "id" /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[36mProject Create (0.9ms)[0m  [1m[32mINSERT INTO "projects" ("name", "cost", "created_at", "updated_at") VALUES ('Library Expansion', 50000, '2025-07-12 08:50:50.008828', '2025-07-12 08:50:50.008828') RETURNING "id" /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mCOMMIT /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[36mProject Create (1.3ms)[0m  [1m[32mINSERT INTO "projects" ("name", "cost", "created_at", "updated_at") VALUES ('New Street Lights', 20000, '2025-07-12 08:50:50.014820', '2025-07-12 08:50:50.014820') RETURNING "id" /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mCOMMIT /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[36mProject Create (0.9ms)[0m  [1m[32mINSERT INTO "projects" ("name", "cost", "created_at", "updated_at") VALUES ('Public Art Installation', 10000, '2025-07-12 08:50:50.023008', '2025-07-12 08:50:50.023008') RETURNING "id" /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mCOMMIT /*application='CivicFund'*/[0m
+  [1m[36mAdmin Load (1.3ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."email" = 'admin@admin.com' LIMIT 1 /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[36mAdmin Exists? (0.7ms)[0m  [1m[34mSELECT 1 AS one FROM "admins" WHERE "admins"."email" = 'admin@admin.com' LIMIT 1 /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+  [1m[36mAdmin Load (1.1ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."email" = 'admin@admin.com' LIMIT 1 /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[36mAdmin Exists? (0.8ms)[0m  [1m[34mSELECT 1 AS one FROM "admins" WHERE "admins"."email" = 'admin@admin.com' LIMIT 1 /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK /*application='CivicFund'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+  [1m[36mAdmin Load (1.1ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."email" = 'admin@admin.com' LIMIT 1 /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='CivicFund'*/[0m
+  [1m[36mAdmin Exists? (0.8ms)[0m  [1m[34mSELECT 1 AS one FROM "admins" WHERE "admins"."email" = 'admin@admin.com' LIMIT 1 /*application='CivicFund'*/[0m
+  [1m[36mAdmin Create (1.1ms)[0m  [1m[32mINSERT INTO "admins" ("email", "encrypted_password", "reset_password_token", "reset_password_sent_at", "remember_created_at", "created_at", "updated_at") VALUES ('admin@admin.com', '$2a$12$JzdKkbofSRCCmb7jMxiOXuG93ZIIZHUimT/T1c/BD.uzna4QtACRO', NULL, NULL, NULL, '2025-07-12 08:51:48.400938', '2025-07-12 08:51:48.400938') RETURNING "id" /*application='CivicFund'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='CivicFund'*/[0m
+Started GET "/admin" for 127.0.0.1 at 2025-07-12 14:22:07 +0530
+  [1m[36mActiveRecord::SchemaMigration Load (0.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+Processing by Admin::DashboardController#index as HTML
+Completed 401 Unauthorized in 45ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/admins/sign_in" for 127.0.0.1 at 2025-07-12 14:22:07 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 3.8ms | GC: 0.2ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 8.7ms | GC: 0.2ms)
+  Rendered layout layouts/application.html.erb (Duration: 10.3ms | GC: 0.3ms)
+Completed 500 Internal Server Error in 77ms (ActiveRecord: 16.4ms (0 queries, 0 cached) | GC: 1.1ms)
+
+
+  
+ActionView::Template::Error (undefined method 'new_admin_registration_path' for an instance of ActionDispatch::Routing::RoutesProxy)
+Caused by: NoMethodError (undefined method 'new_admin_registration_path' for an instance of ActionDispatch::Routing::RoutesProxy)
+
+Information for: ActionView::Template::Error (undefined method 'new_admin_registration_path' for an instance of ActionDispatch::Routing::RoutesProxy):
+    3: <% end %>
+    4: 
+    5: <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+    6:   <%= link_to "Sign up", new_registration_path(resource_name) %><br />
+    7: <% end %>
+    8: 
+    9: <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+  
+app/views/devise/shared/_links.html.erb:6
+app/views/devise/sessions/new.html.erb:258
+
+Information for cause: NoMethodError (undefined method 'new_admin_registration_path' for an instance of ActionDispatch::Routing::RoutesProxy):
+  
+app/views/devise/shared/_links.html.erb:6
+app/views/devise/sessions/new.html.erb:258
+Started GET "/admins/sign_in" for 127.0.0.1 at 2025-07-12 14:22:10 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.9ms | GC: 0.5ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 7.7ms | GC: 1.3ms)
+  Rendered layout layouts/application.html.erb (Duration: 8.7ms | GC: 1.3ms)
+Completed 500 Internal Server Error in 53ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 2.5ms)
+
+
+  
+ActionView::Template::Error (undefined method 'new_admin_registration_path' for an instance of ActionDispatch::Routing::RoutesProxy)
+Caused by: NoMethodError (undefined method 'new_admin_registration_path' for an instance of ActionDispatch::Routing::RoutesProxy)
+
+Information for: ActionView::Template::Error (undefined method 'new_admin_registration_path' for an instance of ActionDispatch::Routing::RoutesProxy):
+    3: <% end %>
+    4: 
+    5: <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+    6:   <%= link_to "Sign up", new_registration_path(resource_name) %><br />
+    7: <% end %>
+    8: 
+    9: <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+  
+app/views/devise/shared/_links.html.erb:6
+app/views/devise/sessions/new.html.erb:258
+
+Information for cause: NoMethodError (undefined method 'new_admin_registration_path' for an instance of ActionDispatch::Routing::RoutesProxy):
+  
+app/views/devise/shared/_links.html.erb:6
+app/views/devise/sessions/new.html.erb:258
+Started GET "/admins/sign_in" for 127.0.0.1 at 2025-07-12 14:37:12 +0530
+  [1m[36mActiveRecord::SchemaMigration Load (1.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 3.4ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 9.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 17.1ms | GC: 0.0ms)
+Completed 200 OK in 108ms (Views: 28.5ms | ActiveRecord: 16.0ms (0 queries, 0 cached) | GC: 0.9ms)
+
+
+Started POST "/admins/sign_in" for 127.0.0.1 at 2025-07-12 14:37:28 +0530
+Processing by Devise::SessionsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "admin" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  [1m[36mAdmin Load (2.5ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."email" = 'admin@admin.com' ORDER BY "admins"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://127.0.0.1:3000/admin
+Completed 303 See Other in 279ms (ActiveRecord: 2.3ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/admin" for 127.0.0.1 at 2025-07-12 14:37:29 +0530
+Processing by Admin::DashboardController#index as TURBO_STREAM
+  [1m[36mAdmin Load (0.5ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (0.9ms)[0m  [1m[34mSELECT "projects".* FROM "projects" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:13
+  [1m[36mAllocation Load (1.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."project_id" IN (1, 2, 3, 4, 5, 6, 7, 8) /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:13
+  [1m[36mAllocation Sum (0.3ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 2 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.1ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 3 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 4 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 5 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 6 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 7 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 8 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 64.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 65.2ms | GC: 0.0ms)
+Completed 200 OK in 93ms (Views: 55.2ms | ActiveRecord: 12.6ms (11 queries, 0 cached) | GC: 0.0ms)
+
+
+  [1m[36mAllocation Load (36.4ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" /* loading for pp */ LIMIT 11 /*application='CivicFund'*/[0m
+  [1m[36mUser Load (1.0ms)[0m  [1m[34mSELECT "users".* FROM "users" /* loading for pp */ LIMIT 11 /*application='CivicFund'*/[0m
+  [1m[36mProject Load (1.9ms)[0m  [1m[34mSELECT "projects".* FROM "projects" /* loading for pp */ LIMIT 11 /*application='CivicFund'*/[0m
+Started GET "/sign_up" for ::1 at 2025-07-12 15:27:21 +0530
+  [1m[36mActiveRecord::SchemaMigration Load (0.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+  
+ActionController::RoutingError (No route matches [GET] "/sign_up"):
+  
+Started GET "/" for ::1 at 2025-07-12 15:27:28 +0530
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 71ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 1.3ms)
+
+
+Started GET "/users/sign_in" for ::1 at 2025-07-12 15:27:28 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.8ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 6.9ms | GC: 0.3ms)
+  Rendered layout layouts/application.html.erb (Duration: 13.1ms | GC: 0.7ms)
+Completed 200 OK in 73ms (Views: 16.4ms | ActiveRecord: 13.2ms (0 queries, 0 cached) | GC: 1.5ms)
+
+
+Started GET "/users/sign_up" for ::1 at 2025-07-12 15:27:33 +0530
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  Rendered devise/registrations/new.html.erb within layouts/application (Duration: 7.8ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 8.6ms | GC: 0.0ms)
+Completed 200 OK in 51ms (Views: 10.0ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/password/new" for ::1 at 2025-07-12 15:27:33 +0530
+Processing by Devise::PasswordsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/passwords/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.2ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  Rendered devise/passwords/new.html.erb within layouts/application (Duration: 4.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 4.7ms | GC: 0.0ms)
+Completed 200 OK in 33ms (Views: 5.6ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_up" for ::1 at 2025-07-12 15:27:34 +0530
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 0.0ms | GC: 0.0ms)
+  Rendered devise/registrations/new.html.erb within layouts/application (Duration: 1.1ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.4ms | GC: 0.0ms)
+Completed 200 OK in 25ms (Views: 1.8ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for ::1 at 2025-07-12 15:27:45 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.5ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 1.9ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 3.0ms | GC: 0.0ms)
+Completed 200 OK in 50ms (Views: 3.3ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/users" for ::1 at 2025-07-12 15:28:06 +0530
+Processing by Devise::RegistrationsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "password_confirmation" => "[FILTERED]"}, "commit" => "Create Account"}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*action='create',application='CivicFund',controller='registrations'*/[0m
+  [1m[36mUser Exists? (2.5ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE "users"."email" = 'mahdi@mahdi.com' LIMIT 1 /*action='create',application='CivicFund',controller='registrations'*/[0m
+  [1m[36mUser Create (0.9ms)[0m  [1m[32mINSERT INTO "users" ("email", "encrypted_password", "reset_password_token", "reset_password_sent_at", "remember_created_at", "created_at", "updated_at") VALUES ('mahdi@mahdi.com', '$2a$12$oBJSTXcPdE4dflP5reK/SuJk.8G2sWNpVSyomt52YVFQbbx56o8dK', NULL, NULL, NULL, '2025-07-12 09:58:06.677442', '2025-07-12 09:58:06.677442') RETURNING "id" /*action='create',application='CivicFund',controller='registrations'*/[0m
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT /*action='create',application='CivicFund',controller='registrations'*/[0m
+Redirected to http://localhost:3000/
+Completed 303 See Other in 290ms (ActiveRecord: 4.6ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 15:28:06 +0530
+Processing by HomeController#index as TURBO_STREAM
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (1.1ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.5ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.1ms | GC: 0.0ms)
+Completed 200 OK in 61ms (Views: 2.5ms | ActiveRecord: 6.0ms (2 queries, 0 cached) | GC: 8.1ms)
+
+
+Started DELETE "/users/sign_out" for ::1 at 2025-07-12 15:29:03 +0530
+Processing by Devise::SessionsController#destroy as HTML
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='destroy',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://localhost:3000/
+Completed 303 See Other in 65ms (ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 0.4ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 15:29:03 +0530
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 22ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for ::1 at 2025-07-12 15:29:03 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 8.6ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 9.1ms | GC: 0.2ms)
+Completed 200 OK in 32ms (Views: 10.4ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.2ms)
+
+
+Started POST "/users/sign_in" for ::1 at 2025-07-12 15:29:20 +0530
+Processing by Devise::SessionsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = 'admin@admin.com' ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='sessions'*/[0m
+Completed 401 Unauthorized in 39ms (ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Processing by Devise::SessionsController#new as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 2.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.8ms | GC: 0.0ms)
+Completed 200 OK in 238ms (Views: 3.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.1ms)
+
+
+Started POST "/users/sign_in" for ::1 at 2025-07-12 15:29:29 +0530
+Processing by Devise::SessionsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = 'admin@admin.com' ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='sessions'*/[0m
+Completed 401 Unauthorized in 50ms (ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.2ms)
+
+
+Processing by Devise::SessionsController#new as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.2ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 1.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.3ms | GC: 0.0ms)
+Completed 200 OK in 244ms (Views: 1.8ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/users/sign_in" for ::1 at 2025-07-12 15:30:27 +0530
+Processing by Devise::SessionsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = 'admin@admin.com' ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='sessions'*/[0m
+Completed 401 Unauthorized in 47ms (ActiveRecord: 0.7ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Processing by Devise::SessionsController#new as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 2.9ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 3.2ms | GC: 0.0ms)
+Completed 200 OK in 243ms (Views: 3.4ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/admins/sign_in" for ::1 at 2025-07-12 15:30:41 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 2.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 3.5ms | GC: 0.0ms)
+Completed 200 OK in 70ms (Views: 4.3ms | ActiveRecord: 4.9ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/admins/sign_in" for ::1 at 2025-07-12 15:30:50 +0530
+Processing by Devise::SessionsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "admin" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  [1m[36mAdmin Load (0.8ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."email" = 'admin@admin.com' ORDER BY "admins"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://localhost:3000/admin
+Completed 303 See Other in 273ms (ActiveRecord: 0.8ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/admin" for ::1 at 2025-07-12 15:30:50 +0530
+Processing by Admin::DashboardController#index as TURBO_STREAM
+  [1m[36mAdmin Load (0.4ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (0.8ms)[0m  [1m[34mSELECT "projects".* FROM "projects" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:13
+  [1m[36mAllocation Load (0.4ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."project_id" IN (1, 2, 3, 4, 5, 6, 7, 8) /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:13
+  [1m[36mAllocation Sum (0.3ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 2 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 3 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 4 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 5 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.3ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 6 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 7 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."project_id" = 8 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:18
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 41.8ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 43.0ms | GC: 0.0ms)
+Completed 200 OK in 76ms (Views: 37.3ms | ActiveRecord: 7.5ms (11 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/admin" for ::1 at 2025-07-12 15:39:32 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (1.3ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 0.6ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 0.7ms | GC: 0.0ms)
+Completed 500 Internal Server Error in 59ms (ActiveRecord: 7.6ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+  
+ActionView::Template::Error (undefined method 'each' for nil)
+Caused by: NoMethodError (undefined method 'each' for nil)
+
+Information for: ActionView::Template::Error (undefined method 'each' for nil):
+    10:     </tr>
+    11:   </thead>
+    12:   <tbody>
+    13:     <% @projects.each do |project| %>
+    14:       <tr>
+    15:         <td><%= project.name %></td>
+    16:         <td>$<%= number_with_delimiter(project.cost) %></td>
+  
+app/views/admin/dashboard/index.html.erb:13
+
+Information for cause: NoMethodError (undefined method 'each' for nil):
+  
+app/views/admin/dashboard/index.html.erb:13
+Started GET "/admin" for ::1 at 2025-07-12 15:40:52 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (0.2ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (1.6ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:13
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 27.8ms | GC: 0.6ms)
+  Rendered layout layouts/application.html.erb (Duration: 32.8ms | GC: 1.1ms)
+Completed 200 OK in 86ms (Views: 25.9ms | ActiveRecord: 17.7ms (2 queries, 0 cached) | GC: 1.4ms)
+
+
+Started GET "/admin" for ::1 at 2025-07-12 15:40:53 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (0.6ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (0.7ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:13
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 7.7ms | GC: 0.3ms)
+  Rendered layout layouts/application.html.erb (Duration: 10.5ms | GC: 0.3ms)
+Completed 200 OK in 61ms (Views: 10.9ms | ActiveRecord: 1.3ms (2 queries, 0 cached) | GC: 0.3ms)
+
+
+Started GET "/admin" for ::1 at 2025-07-12 15:40:54 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (0.5ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (0.5ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:13
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 8.4ms | GC: 0.9ms)
+  Rendered layout layouts/application.html.erb (Duration: 9.6ms | GC: 0.9ms)
+Completed 200 OK in 57ms (Views: 10.2ms | ActiveRecord: 1.0ms (2 queries, 0 cached) | GC: 0.9ms)
+
+
+Started GET "/admin" for ::1 at 2025-07-12 15:40:54 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (0.6ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (0.8ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:13
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 8.4ms | GC: 1.3ms)
+  Rendered layout layouts/application.html.erb (Duration: 8.9ms | GC: 1.3ms)
+Completed 200 OK in 51ms (Views: 8.3ms | ActiveRecord: 1.3ms (2 queries, 0 cached) | GC: 1.3ms)
+
+
+Started GET "/admin" for ::1 at 2025-07-12 15:40:55 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (0.4ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (0.4ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:13
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 4.5ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 4.8ms | GC: 0.0ms)
+Completed 200 OK in 56ms (Views: 4.5ms | ActiveRecord: 0.9ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/admin" for ::1 at 2025-07-12 15:40:55 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (0.9ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (1.0ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:13
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 3.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 3.4ms | GC: 0.0ms)
+Completed 200 OK in 54ms (Views: 2.7ms | ActiveRecord: 1.9ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+  [1m[36mProject Count (22.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "projects" /*application='CivicFund'*/[0m
+  [1m[36mProject Count (6.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "projects" /*application='CivicFund'*/[0m
+  [1m[36mAllocation Load (1.7ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" /* loading for pp */ LIMIT 11 /*application='CivicFund'*/[0m
+Started GET "/" for ::1 at 2025-07-12 15:46:11 +0530
+  [1m[36mActiveRecord::SchemaMigration Load (0.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 45ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for ::1 at 2025-07-12 15:46:11 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 3.5ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 8.8ms | GC: 0.1ms)
+  Rendered layout layouts/application.html.erb (Duration: 17.6ms | GC: 0.7ms)
+Completed 200 OK in 81ms (Views: 26.3ms | ActiveRecord: 14.2ms (0 queries, 0 cached) | GC: 1.5ms)
+
+
+Started GET "/assets/application-e8dc057d.css" for ::1 at 2025-07-12 15:46:11 +0530
+Started GET "/users/sign_up" for ::1 at 2025-07-12 15:46:15 +0530
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.5ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  Rendered devise/registrations/new.html.erb within layouts/application (Duration: 7.1ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 8.7ms | GC: 0.0ms)
+Completed 200 OK in 52ms (Views: 10.2ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for ::1 at 2025-07-12 15:46:21 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.5ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 7.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 8.0ms | GC: 0.0ms)
+Completed 200 OK in 52ms (Views: 10.5ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/password/new" for ::1 at 2025-07-12 15:46:21 +0530
+Processing by Devise::PasswordsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/passwords/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 0.6ms | GC: 0.0ms)
+  Rendered devise/passwords/new.html.erb within layouts/application (Duration: 8.6ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 9.2ms | GC: 0.0ms)
+Completed 200 OK in 54ms (Views: 10.3ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/users/sign_in" for ::1 at 2025-07-12 15:46:37 +0530
+Processing by Devise::SessionsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  [1m[36mUser Load (2.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = 'mahdi@mahdi.com' ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://localhost:3000/
+Completed 303 See Other in 288ms (ActiveRecord: 2.0ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 15:46:37 +0530
+Processing by HomeController#index as TURBO_STREAM
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.9ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.6ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.7ms | GC: 0.0ms)
+Completed 200 OK in 50ms (Views: 2.7ms | ActiveRecord: 5.8ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 15:55:33 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (1.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.8ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.9ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.0ms | GC: 0.0ms)
+Completed 500 Internal Server Error in 92ms (ActiveRecord: 14.3ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+  
+ActionView::Template::Error (undefined local variable or method 'csrf_token' for an instance of #<Class:0x000000012fdb3488>)
+Caused by: NameError (undefined local variable or method 'csrf_token' for an instance of #<Class:0x000000012fdb3488>)
+
+Information for: ActionView::Template::Error (undefined local variable or method 'csrf_token' for an instance of #<Class:0x000000012fdb3488>):
+    4:     <meta charset="UTF-8">
+    5:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    6:     <title>Budget Allocation</title>
+    7:     <meta name="csrf-token" content="<%= csrf_token %>">
+    8:     <style>
+    9:         * {
+   10:             margin: 0;
+  
+app/views/home/index.html.erb:7
+
+Information for cause: NameError (undefined local variable or method 'csrf_token' for an instance of #<Class:0x000000012fdb3488>):
+  
+app/views/home/index.html.erb:7
+Started GET "/favicon.ico" for ::1 at 2025-07-12 15:55:33 +0530
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/" for ::1 at 2025-07-12 15:56:19 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.9ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 4.8ms | GC: 0.0ms)
+Completed 200 OK in 74ms (Views: 6.6ms | ActiveRecord: 12.5ms (2 queries, 0 cached) | GC: 0.4ms)
+
+
+Started POST "/allocations" for ::1 at 2025-07-12 15:56:42 +0530
+Processing by AllocationsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "allocations" => {"1" => "600", "2" => "0", "3" => "0", "4" => "300"}}
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mAllocation Load (0.9ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mProject Load (0.7ms)[0m  [1m[34mSELECT "projects".* FROM "projects" WHERE "projects"."id" = 1 LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mAllocation Sum (0.4ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."user_id" = 2 AND "allocations"."id" IS NOT NULL /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/models/allocation.rb:10:in 'Allocation#within_user_budget'
+  [1m[36mAllocation Create (1.4ms)[0m  [1m[32mINSERT INTO "allocations" ("user_id", "project_id", "amount", "created_at", "updated_at") VALUES (2, 1, 600, '2025-07-12 10:26:42.528982', '2025-07-12 10:26:42.528982') RETURNING "id" /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mProject Load (0.2ms)[0m  [1m[34mSELECT "projects".* FROM "projects" WHERE "projects"."id" = 4 LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mAllocation Sum (1.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."user_id" = 2 AND "allocations"."id" IS NOT NULL /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/models/allocation.rb:10:in 'Allocation#within_user_budget'
+  [1m[36mAllocation Create (0.4ms)[0m  [1m[32mINSERT INTO "allocations" ("user_id", "project_id", "amount", "created_at", "updated_at") VALUES (2, 4, 300, '2025-07-12 10:26:42.543572', '2025-07-12 10:26:42.543572') RETURNING "id" /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mTRANSACTION (3.9ms)[0m  [1m[35mCOMMIT /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:5:in 'AllocationsController#create'
+Redirected to http://localhost:3000/
+Completed 302 Found in 85ms (ActiveRecord: 12.6ms (8 queries, 0 cached) | GC: 0.8ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 15:56:42 +0530
+Processing by HomeController#index as TURBO_STREAM
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.3ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.8ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.5ms | GC: 0.0ms)
+Completed 200 OK in 52ms (Views: 3.2ms | ActiveRecord: 0.6ms (2 queries, 0 cached) | GC: 0.5ms)
+
+
+Started POST "/allocations" for ::1 at 2025-07-12 15:56:49 +0530
+Processing by AllocationsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "allocations" => {"1" => "0", "2" => "0", "3" => "0", "4" => "0"}}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mAllocation Load (0.8ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mAllocation Destroy (1.5ms)[0m  [1m[31mDELETE FROM "allocations" WHERE "allocations"."id" = 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mAllocation Destroy (0.1ms)[0m  [1m[31mDELETE FROM "allocations" WHERE "allocations"."id" = 2 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mCOMMIT /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:5:in 'AllocationsController#create'
+Redirected to http://localhost:3000/
+Completed 302 Found in 51ms (ActiveRecord: 3.1ms (4 queries, 0 cached) | GC: 0.1ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 15:56:49 +0530
+Processing by HomeController#index as TURBO_STREAM
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.1ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 0.7ms | GC: 0.0ms)
+Completed 200 OK in 26ms (Views: 1.0ms | ActiveRecord: 0.5ms (2 queries, 0 cached) | GC: 0.2ms)
+
+
+Started POST "/allocations" for ::1 at 2025-07-12 15:57:01 +0530
+Processing by AllocationsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "allocations" => {"1" => "0", "2" => "123", "3" => "0", "4" => "0"}}
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mAllocation Load (0.6ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mProject Load (0.3ms)[0m  [1m[34mSELECT "projects".* FROM "projects" WHERE "projects"."id" = 2 LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mAllocation Sum (0.3ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."user_id" = 2 AND "allocations"."id" IS NOT NULL /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/models/allocation.rb:10:in 'Allocation#within_user_budget'
+  [1m[36mAllocation Create (0.3ms)[0m  [1m[32mINSERT INTO "allocations" ("user_id", "project_id", "amount", "created_at", "updated_at") VALUES (2, 2, 123, '2025-07-12 10:27:01.574622', '2025-07-12 10:27:01.574622') RETURNING "id" /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mCOMMIT /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:5:in 'AllocationsController#create'
+Redirected to http://localhost:3000/
+Completed 302 Found in 56ms (ActiveRecord: 2.2ms (5 queries, 0 cached) | GC: 0.4ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 15:57:01 +0530
+Processing by HomeController#index as TURBO_STREAM
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.7ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.5ms | GC: 0.0ms)
+Completed 200 OK in 31ms (Views: 2.1ms | ActiveRecord: 0.7ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 15:58:15 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 3.2ms | GC: 0.0ms)
+Completed 200 OK in 69ms (Views: 5.0ms | ActiveRecord: 7.2ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/allocations" for ::1 at 2025-07-12 15:58:35 +0530
+Processing by AllocationsController#create as HTML
+  Parameters: {"authenticity_token" => "[FILTERED]", "allocations" => {"1" => "200", "2" => "450", "3" => "0", "4" => "300"}}
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mAllocation Load (0.8ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mAllocation Destroy (0.2ms)[0m  [1m[31mDELETE FROM "allocations" WHERE "allocations"."id" = 3 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mProject Load (0.2ms)[0m  [1m[34mSELECT "projects".* FROM "projects" WHERE "projects"."id" = 1 LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mAllocation Sum (0.3ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."user_id" = 2 AND "allocations"."id" IS NOT NULL /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/models/allocation.rb:10:in 'Allocation#within_user_budget'
+  [1m[36mAllocation Create (0.4ms)[0m  [1m[32mINSERT INTO "allocations" ("user_id", "project_id", "amount", "created_at", "updated_at") VALUES (2, 1, 200, '2025-07-12 10:28:35.714316', '2025-07-12 10:28:35.714316') RETURNING "id" /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mProject Load (0.3ms)[0m  [1m[34mSELECT "projects".* FROM "projects" WHERE "projects"."id" = 2 LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."user_id" = 2 AND "allocations"."id" IS NOT NULL /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/models/allocation.rb:10:in 'Allocation#within_user_budget'
+  [1m[36mAllocation Create (0.4ms)[0m  [1m[32mINSERT INTO "allocations" ("user_id", "project_id", "amount", "created_at", "updated_at") VALUES (2, 2, 450, '2025-07-12 10:28:35.727908', '2025-07-12 10:28:35.727908') RETURNING "id" /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mProject Load (0.2ms)[0m  [1m[34mSELECT "projects".* FROM "projects" WHERE "projects"."id" = 4 LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mAllocation Sum (0.2ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."user_id" = 2 AND "allocations"."id" IS NOT NULL /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/models/allocation.rb:10:in 'Allocation#within_user_budget'
+  [1m[36mAllocation Create (0.5ms)[0m  [1m[32mINSERT INTO "allocations" ("user_id", "project_id", "amount", "created_at", "updated_at") VALUES (2, 4, 300, '2025-07-12 10:28:35.736417', '2025-07-12 10:28:35.736417') RETURNING "id" /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:5:in 'AllocationsController#create'
+Redirected to http://localhost:3000/
+Completed 302 Found in 106ms (ActiveRecord: 7.5ms (12 queries, 0 cached) | GC: 6.0ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 15:58:35 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.3ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.7ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.2ms | GC: 0.0ms)
+Completed 200 OK in 39ms (Views: 2.2ms | ActiveRecord: 0.7ms (2 queries, 0 cached) | GC: 0.3ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 16:09:25 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (1.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.7ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  [1m[36mProject Load (0.6ms)[0m  [1m[34mSELECT "projects".* FROM "projects" /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/views/home/index.html.erb:367
+  Rendered home/index.html.erb within layouts/application (Duration: 6.4ms | GC: 0.3ms)
+  Rendered layout layouts/application.html.erb (Duration: 6.5ms | GC: 0.3ms)
+Completed 500 Internal Server Error in 80ms (ActiveRecord: 8.9ms (3 queries, 0 cached) | GC: 0.8ms)
+
+
+  
+ActionView::Template::Error (undefined method 'category' for an instance of Project)
+Caused by: NoMethodError (undefined method 'category' for an instance of Project)
+
+Information for: ActionView::Template::Error (undefined method 'category' for an instance of Project):
+    368:                     <div class="project-card" data-project="<%= project.id %>">
+    369:                         <div class="project-header">
+    370:                             <h3 class="project-title"><%= project.name %></h3>
+    371:                             <span class="project-category"><%= project.category %></span>
+    372:                         </div>
+    373:                         <div class="requested-section">
+    374:                             <div class="requested-label">Requested Funding</div>
+  
+app/views/home/index.html.erb:371
+app/views/home/index.html.erb:367
+
+Information for cause: NoMethodError (undefined method 'category' for an instance of Project):
+  
+app/views/home/index.html.erb:371
+app/views/home/index.html.erb:367
+Started GET "/" for ::1 at 2025-07-12 16:10:00 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 2 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  [1m[36mProject Load (0.3ms)[0m  [1m[34mSELECT "projects".* FROM "projects" /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/views/home/index.html.erb:367
+  Rendered home/index.html.erb within layouts/application (Duration: 10.2ms | GC: 0.9ms)
+  Rendered layout layouts/application.html.erb (Duration: 12.1ms | GC: 1.1ms)
+Completed 200 OK in 87ms (Views: 9.9ms | ActiveRecord: 16.6ms (3 queries, 0 cached) | GC: 1.8ms)
+
+
+Started DELETE "/users/sign_out" for ::1 at 2025-07-12 16:10:17 +0530
+Processing by Devise::SessionsController#destroy as HTML
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 2 ORDER BY "users"."id" ASC LIMIT 1 /*action='destroy',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://localhost:3000/
+Completed 303 See Other in 43ms (ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 2.3ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 16:10:17 +0530
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 32ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.4ms)
+
+
+Started GET "/users/sign_in" for ::1 at 2025-07-12 16:10:17 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 2.2ms | GC: 0.8ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 8.1ms | GC: 1.7ms)
+  Rendered layout layouts/application.html.erb (Duration: 10.5ms | GC: 1.7ms)
+Completed 200 OK in 37ms (Views: 14.5ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 3.1ms)
+
+
+Started GET "/admins/signin" for ::1 at 2025-07-12 16:10:34 +0530
+  
+ActionController::RoutingError (No route matches [GET] "/admins/signin"):
+  
+Started GET "/admins/sign_in" for ::1 at 2025-07-12 16:11:12 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 11.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 11.7ms | GC: 0.0ms)
+Completed 200 OK in 66ms (Views: 12.4ms | ActiveRecord: 2.8ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/admins/sign_in" for ::1 at 2025-07-12 16:11:29 +0530
+Processing by Devise::SessionsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "admin" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  [1m[36mAdmin Load (1.2ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."email" = 'admin@admin.com' ORDER BY "admins"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://localhost:3000/admin
+Completed 303 See Other in 292ms (ActiveRecord: 1.2ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/admin" for ::1 at 2025-07-12 16:11:30 +0530
+Processing by Admin::DashboardController#index as TURBO_STREAM
+  [1m[36mAdmin Load (0.3ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (1.0ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:13
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 11.6ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 13.5ms | GC: 0.0ms)
+Completed 200 OK in 38ms (Views: 13.8ms | ActiveRecord: 1.3ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/admin" for ::1 at 2025-07-12 16:15:57 +0530
+  [1m[36mActiveRecord::SchemaMigration Load (1.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='CivicFund'*/[0m
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (0.6ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (1.6ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:359
+  [1m[36mProject Count (0.9ms)[0m  [1m[34mSELECT COUNT(projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated) AS "count_projects_all_coalesce_sum_allocations_amount_0_as_total_a", "projects"."id" AS "projects_id" FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:369
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 31.8ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 33.5ms | GC: 0.0ms)
+Completed 500 Internal Server Error in 151ms (ActiveRecord: 62.6ms (3 queries, 0 cached) | GC: 1.1ms)
+
+
+  
+ActionView::Template::Error (PG::SyntaxError: ERROR:  syntax error at or near "as"
+LINE 1: ...(projects.*, COALESCE(SUM(allocations.amount), 0) as total_a...
+                                                             ^
+)
+Caused by: ActiveRecord::StatementInvalid (PG::SyntaxError: ERROR:  syntax error at or near "as"
+LINE 1: ...(projects.*, COALESCE(SUM(allocations.amount), 0) as total_a...
+                                                             ^
+)
+Caused by: PG::SyntaxError (ERROR:  syntax error at or near "as"
+LINE 1: ...(projects.*, COALESCE(SUM(allocations.amount), 0) as total_a...
+                                                             ^
+)
+
+Information for: ActionView::Template::Error (PG::SyntaxError: ERROR:  syntax error at or near "as"
+LINE 1: ...(projects.*, COALESCE(SUM(allocations.amount), 0) as total_a...
+                                                             ^
+):
+    366:             <div class="summary-card">
+    367:                 <div class="card-icon">🎯</div>
+    368:                 <div class="card-title">Active Projects</div>
+    369:                 <div class="card-value"><%= @projects_with_allocations.count %></div>
+    370:             </div>
+    371:             <div class="summary-card">
+    372:                 <div class="card-icon">👥</div>
+  
+
+Information for cause: ActiveRecord::StatementInvalid (PG::SyntaxError: ERROR:  syntax error at or near "as"
+LINE 1: ...(projects.*, COALESCE(SUM(allocations.amount), 0) as total_a...
+                                                             ^
+):
+  
+
+Information for cause: PG::SyntaxError (ERROR:  syntax error at or near "as"
+LINE 1: ...(projects.*, COALESCE(SUM(allocations.amount), 0) as total_a...
+                                                             ^
+):
+  
+app/views/admin/dashboard/index.html.erb:369
+Started GET "/admin" for ::1 at 2025-07-12 16:16:16 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (0.6ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (0.5ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:13
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 30.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 39.1ms | GC: 0.0ms)
+Completed 200 OK in 96ms (Views: 34.8ms | ActiveRecord: 12.5ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/admin" for ::1 at 2025-07-12 16:30:18 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (1.7ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (1.6ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:212
+  [1m[36mProject Count (0.6ms)[0m  [1m[34mSELECT COUNT(projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated) AS "count_projects_all_coalesce_sum_allocations_amount_0_as_total_a", "projects"."id" AS "projects_id" FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:214
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 18.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 18.6ms | GC: 0.0ms)
+Completed 500 Internal Server Error in 71ms (ActiveRecord: 12.0ms (3 queries, 0 cached) | GC: 0.0ms)
+
+
+  
+ActionView::Template::Error (PG::SyntaxError: ERROR:  syntax error at or near "as"
+LINE 1: ...(projects.*, COALESCE(SUM(allocations.amount), 0) as total_a...
+                                                             ^
+)
+Caused by: ActiveRecord::StatementInvalid (PG::SyntaxError: ERROR:  syntax error at or near "as"
+LINE 1: ...(projects.*, COALESCE(SUM(allocations.amount), 0) as total_a...
+                                                             ^
+)
+Caused by: PG::SyntaxError (ERROR:  syntax error at or near "as"
+LINE 1: ...(projects.*, COALESCE(SUM(allocations.amount), 0) as total_a...
+                                                             ^
+)
+
+Information for: ActionView::Template::Error (PG::SyntaxError: ERROR:  syntax error at or near "as"
+LINE 1: ...(projects.*, COALESCE(SUM(allocations.amount), 0) as total_a...
+                                                             ^
+):
+    211: 
+    212:   <% if @projects_with_allocations.present? %>
+    213:     <% 
+    214:       total_projects = @projects_with_allocations.count
+    215:       total_requested = @projects_with_allocations.sum(&:cost)
+    216:       total_allocated = @projects_with_allocations.sum { |p| p.total_allocated.to_i }
+    217:       avg_allocation = total_projects > 0 ? (total_allocated.to_f / total_requested * 100).round(1) : 0
+  
+
+Information for cause: ActiveRecord::StatementInvalid (PG::SyntaxError: ERROR:  syntax error at or near "as"
+LINE 1: ...(projects.*, COALESCE(SUM(allocations.amount), 0) as total_a...
+                                                             ^
+):
+  
+
+Information for cause: PG::SyntaxError (ERROR:  syntax error at or near "as"
+LINE 1: ...(projects.*, COALESCE(SUM(allocations.amount), 0) as total_a...
+                                                             ^
+):
+  
+app/views/admin/dashboard/index.html.erb:214
+Started GET "/admin" for ::1 at 2025-07-12 16:32:15 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (0.3ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 0.6ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 4.8ms | GC: 0.0ms)
+Completed 200 OK in 49ms (Views: 5.8ms | ActiveRecord: 8.2ms (1 query, 0 cached) | GC: 0.2ms)
+
+
+Started GET "/admin" for ::1 at 2025-07-12 16:33:27 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (0.2ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (0.5ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:46
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 15.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 17.9ms | GC: 0.0ms)
+Completed 200 OK in 61ms (Views: 13.9ms | ActiveRecord: 8.9ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/admin" for ::1 at 2025-07-12 16:37:26 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (0.2ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (0.3ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:69
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 15.5ms | GC: 0.3ms)
+  Rendered layout layouts/application.html.erb (Duration: 17.9ms | GC: 0.5ms)
+Completed 200 OK in 70ms (Views: 15.8ms | ActiveRecord: 9.5ms (2 queries, 0 cached) | GC: 10.4ms)
+
+
+Started GET "/admins/sign_out" for ::1 at 2025-07-12 16:37:42 +0530
+  
+ActionController::RoutingError (No route matches [GET] "/admins/sign_out"):
+  
+Started GET "/admin" for ::1 at 2025-07-12 16:40:07 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (0.2ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (0.4ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:69
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 15.4ms | GC: 0.2ms)
+  Rendered layout layouts/application.html.erb (Duration: 18.7ms | GC: 0.5ms)
+Completed 200 OK in 57ms (Views: 13.2ms | ActiveRecord: 10.2ms (2 queries, 0 cached) | GC: 1.0ms)
+
+
+Started GET "/admins/sign_out" for ::1 at 2025-07-12 16:40:10 +0530
+  
+ActionController::RoutingError (No route matches [GET] "/admins/sign_out"):
+  
+Started GET "/admins/sign_out" for ::1 at 2025-07-12 16:40:13 +0530
+  
+ActionController::RoutingError (No route matches [GET] "/admins/sign_out"):
+  
+Started GET "/admins/sign_out" for ::1 at 2025-07-12 16:40:14 +0530
+  
+ActionController::RoutingError (No route matches [GET] "/admins/sign_out"):
+  
+Started GET "/admins/sign_out" for ::1 at 2025-07-12 16:40:14 +0530
+  
+ActionController::RoutingError (No route matches [GET] "/admins/sign_out"):
+  
+Started GET "/admins/sign_out" for ::1 at 2025-07-12 16:40:14 +0530
+  
+ActionController::RoutingError (No route matches [GET] "/admins/sign_out"):
+  
+Started GET "/admin" for ::1 at 2025-07-12 16:42:47 +0530
+Processing by Admin::DashboardController#index as HTML
+  [1m[36mAdmin Load (0.3ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (0.4ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:69
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 18.9ms | GC: 0.1ms)
+  Rendered layout layouts/application.html.erb (Duration: 21.5ms | GC: 0.2ms)
+Completed 200 OK in 65ms (Views: 16.8ms | ActiveRecord: 11.4ms (2 queries, 0 cached) | GC: 0.8ms)
+
+
+Started DELETE "/admins/sign_out" for ::1 at 2025-07-12 16:42:50 +0530
+Processing by Devise::SessionsController#destroy as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+  [1m[36mAdmin Load (0.5ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='destroy',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://localhost:3000/
+Completed 303 See Other in 47ms (ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.1ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 16:42:50 +0530
+Processing by HomeController#index as TURBO_STREAM
+Completed 401 Unauthorized in 23ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for ::1 at 2025-07-12 16:42:50 +0530
+Processing by Devise::SessionsController#new as TURBO_STREAM
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.8ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 8.4ms | GC: 0.4ms)
+  Rendered layout layouts/application.html.erb (Duration: 10.4ms | GC: 0.4ms)
+Completed 200 OK in 41ms (Views: 12.5ms | ActiveRecord: 4.5ms (0 queries, 0 cached) | GC: 0.4ms)
+
+
+Started GET "/users/sign_up" for ::1 at 2025-07-12 16:45:42 +0530
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  Rendered devise/shared/_links.html.erb (Duration: 0.8ms | GC: 0.0ms)
+  Rendered devise/registrations/new.html.erb within layouts/application (Duration: 7.7ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 8.3ms | GC: 0.0ms)
+Completed 200 OK in 47ms (Views: 9.5ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.4ms)
+
+
+Started POST "/users" for ::1 at 2025-07-12 16:45:56 +0530
+Processing by Devise::RegistrationsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "password_confirmation" => "[FILTERED]"}, "commit" => "Create Account"}
+  [1m[36mTRANSACTION (4.4ms)[0m  [1m[35mBEGIN /*action='create',application='CivicFund',controller='registrations'*/[0m
+  [1m[36mUser Exists? (6.8ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE "users"."email" = 'athikajishida@gmail.com' LIMIT 1 /*action='create',application='CivicFund',controller='registrations'*/[0m
+  [1m[36mUser Create (0.7ms)[0m  [1m[32mINSERT INTO "users" ("email", "encrypted_password", "reset_password_token", "reset_password_sent_at", "remember_created_at", "created_at", "updated_at") VALUES ('athikajishida@gmail.com', '$2a$12$n7xBk2oobozS0ymv9rjNI.X.SDwGIWiQ24OPjSB2Hmqi6Zqsfs6Ae', NULL, NULL, NULL, '2025-07-12 11:15:56.768690', '2025-07-12 11:15:56.768690') RETURNING "id" /*action='create',application='CivicFund',controller='registrations'*/[0m
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT /*action='create',application='CivicFund',controller='registrations'*/[0m
+Redirected to http://localhost:3000/
+Completed 303 See Other in 299ms (ActiveRecord: 12.6ms (2 queries, 0 cached) | GC: 0.6ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 16:45:56 +0530
+Processing by HomeController#index as TURBO_STREAM
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 3 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 3 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  [1m[36mProject Load (0.2ms)[0m  [1m[34mSELECT "projects".* FROM "projects" /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/views/home/index.html.erb:367
+  Rendered home/index.html.erb within layouts/application (Duration: 2.1ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.8ms | GC: 0.0ms)
+Completed 200 OK in 42ms (Views: 3.9ms | ActiveRecord: 2.1ms (3 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/allocations" for ::1 at 2025-07-12 16:46:59 +0530
+Processing by AllocationsController#create as HTML
+  Parameters: {"authenticity_token" => "[FILTERED]", "allocations" => {"1" => "450", "2" => "0", "3" => "0", "4" => "500", "5" => "0", "6" => "0", "7" => "0", "8" => "0"}}
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 3 ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mAllocation Load (0.7ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 3 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mProject Load (0.4ms)[0m  [1m[34mSELECT "projects".* FROM "projects" WHERE "projects"."id" = 1 LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mAllocation Sum (0.3ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."user_id" = 3 AND "allocations"."id" IS NOT NULL /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/models/allocation.rb:14:in 'Allocation#within_user_budget'
+  [1m[36mAllocation Create (0.9ms)[0m  [1m[32mINSERT INTO "allocations" ("user_id", "project_id", "amount", "created_at", "updated_at") VALUES (3, 1, 450, '2025-07-12 11:16:59.326307', '2025-07-12 11:16:59.326307') RETURNING "id" /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mProject Load (0.3ms)[0m  [1m[34mSELECT "projects".* FROM "projects" WHERE "projects"."id" = 4 LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mAllocation Sum (0.3ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."user_id" = 3 AND "allocations"."id" IS NOT NULL /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/models/allocation.rb:14:in 'Allocation#within_user_budget'
+  [1m[36mAllocation Create (0.4ms)[0m  [1m[32mINSERT INTO "allocations" ("user_id", "project_id", "amount", "created_at", "updated_at") VALUES (3, 4, 500, '2025-07-12 11:16:59.339923', '2025-07-12 11:16:59.339923') RETURNING "id" /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:5:in 'AllocationsController#create'
+Redirected to http://localhost:3000/
+Completed 302 Found in 77ms (ActiveRecord: 4.2ms (8 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 16:46:59 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 3 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.3ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 3 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  [1m[36mProject Load (0.3ms)[0m  [1m[34mSELECT "projects".* FROM "projects" /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/views/home/index.html.erb:367
+  Rendered home/index.html.erb within layouts/application (Duration: 3.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 3.7ms | GC: 0.0ms)
+Completed 200 OK in 38ms (Views: 3.6ms | ActiveRecord: 1.1ms (3 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/allocations" for ::1 at 2025-07-12 16:47:22 +0530
+Processing by AllocationsController#create as HTML
+  Parameters: {"authenticity_token" => "[FILTERED]", "allocations" => {"1" => "450", "2" => "0", "3" => "0", "4" => "500", "5" => "50", "6" => "0", "7" => "0", "8" => ""}}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 3 ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mAllocation Load (0.7ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 3 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mAllocation Destroy (0.6ms)[0m  [1m[31mDELETE FROM "allocations" WHERE "allocations"."id" = 7 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mAllocation Destroy (0.2ms)[0m  [1m[31mDELETE FROM "allocations" WHERE "allocations"."id" = 8 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:6:in 'block in AllocationsController#create'
+  [1m[36mProject Load (0.3ms)[0m  [1m[34mSELECT "projects".* FROM "projects" WHERE "projects"."id" = 1 LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mAllocation Sum (0.3ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."user_id" = 3 AND "allocations"."id" IS NOT NULL /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/models/allocation.rb:14:in 'Allocation#within_user_budget'
+  [1m[36mAllocation Create (0.6ms)[0m  [1m[32mINSERT INTO "allocations" ("user_id", "project_id", "amount", "created_at", "updated_at") VALUES (3, 1, 450, '2025-07-12 11:17:22.926788', '2025-07-12 11:17:22.926788') RETURNING "id" /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mProject Load (0.3ms)[0m  [1m[34mSELECT "projects".* FROM "projects" WHERE "projects"."id" = 4 LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mAllocation Sum (0.3ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."user_id" = 3 AND "allocations"."id" IS NOT NULL /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/models/allocation.rb:14:in 'Allocation#within_user_budget'
+  [1m[36mAllocation Create (0.7ms)[0m  [1m[32mINSERT INTO "allocations" ("user_id", "project_id", "amount", "created_at", "updated_at") VALUES (3, 4, 500, '2025-07-12 11:17:22.934649', '2025-07-12 11:17:22.934649') RETURNING "id" /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mProject Load (0.3ms)[0m  [1m[34mSELECT "projects".* FROM "projects" WHERE "projects"."id" = 5 LIMIT 1 /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mAllocation Sum (0.1ms)[0m  [1m[34mSELECT SUM("allocations"."amount") FROM "allocations" WHERE "allocations"."user_id" = 3 AND "allocations"."id" IS NOT NULL /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/models/allocation.rb:14:in 'Allocation#within_user_budget'
+  [1m[36mAllocation Create (0.5ms)[0m  [1m[32mINSERT INTO "allocations" ("user_id", "project_id", "amount", "created_at", "updated_at") VALUES (3, 5, 50, '2025-07-12 11:17:22.946834', '2025-07-12 11:17:22.946834') RETURNING "id" /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:11:in 'block (2 levels) in AllocationsController#create'
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*action='create',application='CivicFund',controller='allocations'*/[0m
+  ↳ app/controllers/allocations_controller.rb:5:in 'AllocationsController#create'
+Redirected to http://localhost:3000/
+Completed 302 Found in 104ms (ActiveRecord: 5.8ms (13 queries, 0 cached) | GC: 5.3ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 16:47:22 +0530
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 3 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='home'*/[0m
+  [1m[36mAllocation Load (0.2ms)[0m  [1m[34mSELECT "allocations".* FROM "allocations" WHERE "allocations"."user_id" = 3 /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/controllers/home_controller.rb:6:in 'HomeController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  [1m[36mProject Load (0.2ms)[0m  [1m[34mSELECT "projects".* FROM "projects" /*action='index',application='CivicFund',controller='home'*/[0m
+  ↳ app/views/home/index.html.erb:367
+  Rendered home/index.html.erb within layouts/application (Duration: 1.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.5ms | GC: 0.0ms)
+Completed 200 OK in 33ms (Views: 3.5ms | ActiveRecord: 0.9ms (3 queries, 0 cached) | GC: 0.0ms)
+
+
+Started DELETE "/users/sign_out" for ::1 at 2025-07-12 16:47:38 +0530
+Processing by Devise::SessionsController#destroy as HTML
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 3 ORDER BY "users"."id" ASC LIMIT 1 /*action='destroy',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://localhost:3000/
+Completed 303 See Other in 51ms (ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 16:47:38 +0530
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 26ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/users/sign_in" for ::1 at 2025-07-12 16:47:38 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 1.3ms | GC: 0.2ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 2.6ms | GC: 0.2ms)
+  Rendered layout layouts/application.html.erb (Duration: 3.4ms | GC: 0.2ms)
+Completed 200 OK in 28ms (Views: 7.2ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.2ms)
+
+
+Started GET "/admins/sign_in" for ::1 at 2025-07-12 16:47:48 +0530
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.8ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 7.8ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 10.9ms | GC: 0.0ms)
+Completed 200 OK in 51ms (Views: 12.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/admins/sign_in" for ::1 at 2025-07-12 16:48:00 +0530
+Processing by Devise::SessionsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "admin" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "remember_me" => "0"}, "commit" => "Sign In"}
+  [1m[36mAdmin Load (0.4ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."email" = 'admin@admin.com' ORDER BY "admins"."id" ASC LIMIT 1 /*action='create',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://localhost:3000/admin
+Completed 303 See Other in 286ms (ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 0.2ms)
+
+
+Started GET "/admin" for ::1 at 2025-07-12 16:48:00 +0530
+Processing by Admin::DashboardController#index as TURBO_STREAM
+  [1m[36mAdmin Load (0.5ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  Rendering layout layouts/application.html.erb
+  Rendering admin/dashboard/index.html.erb within layouts/application
+  [1m[36mProject Load (0.6ms)[0m  [1m[34mSELECT projects.*, COALESCE(SUM(allocations.amount), 0) as total_allocated FROM "projects" LEFT OUTER JOIN "allocations" ON "allocations"."project_id" = "projects"."id" GROUP BY "projects"."id" /*action='index',application='CivicFund',controller='dashboard'*/[0m
+  ↳ app/views/admin/dashboard/index.html.erb:69
+  Rendered admin/dashboard/index.html.erb within layouts/application (Duration: 10.9ms | GC: 3.6ms)
+  Rendered layout layouts/application.html.erb (Duration: 11.7ms | GC: 3.7ms)
+Completed 200 OK in 58ms (Views: 12.0ms | ActiveRecord: 1.2ms (2 queries, 0 cached) | GC: 3.7ms)
+
+
+Started DELETE "/admins/sign_out" for ::1 at 2025-07-12 16:48:56 +0530
+Processing by Devise::SessionsController#destroy as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+  [1m[36mAdmin Load (0.4ms)[0m  [1m[34mSELECT "admins".* FROM "admins" WHERE "admins"."id" = 1 ORDER BY "admins"."id" ASC LIMIT 1 /*action='destroy',application='CivicFund',controller='sessions'*/[0m
+Redirected to http://localhost:3000/
+Completed 303 See Other in 50ms (ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 5.2ms)
+
+
+Started GET "/" for ::1 at 2025-07-12 16:48:56 +0530
+Processing by HomeController#index as TURBO_STREAM
+Completed 401 Unauthorized in 21ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.8ms)
+
+
+Started GET "/users/sign_in" for ::1 at 2025-07-12 16:48:56 +0530
+Processing by Devise::SessionsController#new as TURBO_STREAM
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.6ms | GC: 0.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 6.1ms | GC: 0.5ms)
+  Rendered layout layouts/application.html.erb (Duration: 8.0ms | GC: 1.4ms)
+Completed 200 OK in 32ms (Views: 8.7ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 1.8ms)
+
+
