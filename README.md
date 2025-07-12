@@ -36,7 +36,9 @@ Welcome to **CivicFund**, a Ruby on Rails application that enables residents to 
 
 ## 📷 Screenshots
 
-> (Consider uploading screenshots of Resident allocation UI, Admin dashboard, and confirmation screen)
+<img width="2940" height="1762" alt="image" src="https://github.com/user-attachments/assets/9721ecb2-44f8-4855-bfda-aef054efba3c" />
+<img width="2938" height="1756" alt="image" src="https://github.com/user-attachments/assets/319898f8-5d38-4846-881f-e3b174b6c79e" />
+<img width="2908" height="1190" alt="image" src="https://github.com/user-attachments/assets/929828b7-faa2-42e4-ba4f-c59e7a0e06be" />
 
 ---
 
